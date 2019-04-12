@@ -1,11 +1,30 @@
+#return list of tuples containing id, x, and y coordinates
+import math
 class Graph:
     """docstring for Graph"""
-    def __init__(self, points):
+    def __init__(self, fileName):
         # get points in from of [(ID, (X, Y)), ...]
+        fp = open(fileName, 'r')
+        x_y = []
+        for line in fp:
+            lines = line.split()
+        #appends a new tuple with id, x, and y coordinates into list 
+            x_y.append((int(float(lines[0])), int(float(lines[1])), int(float(lines[2]))))
+        print(x_y)
+        #creates dictionary of distances between all points
+        self.pairMatrix = [[] for x in range(len(x_y))]
+        for i in range(len(x_y)):
+            for j in range(len(x_y)):
+                self.pairMatrix[i].append(int(math.sqrt((x_y[i][1]-x_y[j][1])**2 + (x_y[i][2]-x_y[j][2])**2)))
 
-        for i in range(0, len(points)):
-            for j in range(0, len(points)):
-                self.pairMatrix[i][j] = int(round(sqrt(int(round(points[i][1][0] - points[j][1][0]))^2 + int(round(points[i][1][1] - points[j][1][1]))^2)))
-
+        print (self.pairMatrix)
     def getPairMatrix(self):
         return self.pairMatrix
+
+def main():
+    graph = Graph("example_test.txt")
+
+if __name__ == "__main__":
+    main()
+
+
