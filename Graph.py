@@ -8,16 +8,16 @@ class Graph:
         x_y = []
         for line in fp:
             lines = line.split()
-        #appends a new tuple with id, x, and y coordinates into list 
+        #appends a new tuple with id, x, and y coordinates into list
             x_y.append((int(float(lines[0])), int(float(lines[1])), int(float(lines[2]))))
-        print(x_y)
+        # print(x_y)
         #creates dictionary of distances between all points
         self.pairMatrix = [[] for x in range(len(x_y))]
         for i in range(len(x_y)):
             for j in range(len(x_y)):
                 self.pairMatrix[i].append(int(math.sqrt((x_y[i][1]-x_y[j][1])**2 + (x_y[i][2]-x_y[j][2])**2)))
 
-        print (self.pairMatrix)
+        # print (self.pairMatrix)
     def getPairMatrix(self):
         return self.pairMatrix
 
