@@ -1,13 +1,21 @@
 #return list of tuples containing id, x, and y coordinates
+import sys
 import math
 import random
 import numpy as np
 import datetime
+
+def input():
+    filename = str(sys.argv[1])
+    output = str(sys.argv[2])
+    max_time = int(sys.argv[3])
+    return [filename, output, max_time]
 class Graph:
     """docstring for Graph"""
-    def __init__(self, fileName):
+    def __init__(self, fileName, maxTime):
         # get points in from of [(ID, (X, Y)), ...]
         fp = open(fileName, 'r')
+        self.maxTime = maxTime
         x_y = []
         for line in fp:
             lines = line.split()
@@ -148,21 +156,44 @@ class Graph:
         print("Initial distance: " + str(1/self.checkFitness(pop)[0][0]))
         start = datetime.datetime.now()
 
-        while (datetime.datetime.now() - start).seconds < 180:
+        while (datetime.datetime.now() - start).seconds < self.maxTime - 2:
             pop = self.nextGeneration(pop, elite_size, mutation_prob)
 
         print("Final distance: " + str(1 / self.checkFitness(pop)[0][0]))
         best_route_i = self.checkFitness(pop)[0][1]
         print(1/self.checkFitness(pop)[0][0])
         bestRoute = pop[best_route_i]
-        return bestRoute
+        return 1/self.checkFitness(pop)[0][0], bestRoute
 
 
 
 
 def main():
-    graph = Graph("example_test.txt")
-    route = graph.geneticAlgorithm(100, 15, 0.01)
+    start = datetime.datetime.now()
+    params = input()
+    graph = Graph("example_test.txt", params[2])
+    #print(graph.getPairMatrix())
+    #print("\n")
+    dist, route = graph.geneticAlgorithm(200, 15, 0.01)
+    print(dist, "\n")
+    print(route)
+    print("\n")
+    #print("[")
+    '''for city in range(len(route)):
+        if city + 1 >= len(route):
+            print(graph.getPairMatrix()[route[city] - 1][route[0] - 1], " ")
+        else:
+            print(graph.getPairMatrix()[route[city] - 1][route[city + 1] - 1], " ")
+    print("]")'''
+    fp = open(params[1], "w")
+    fp.write(str(dist))
+    fp.write("\n")
+    for city in route:
+        fp.write(str(city)+" ")
+    fp.write(str(route[0]))
+    print((datetime.datetime.now() - start).seconds)
+
+
 
 if __name__ == "__main__":
     main()
