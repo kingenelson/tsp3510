@@ -162,7 +162,7 @@ class Graph:
 
 def main():
     graph = Graph("example_test.txt")
-    route = graph.geneticAlgorithm(100, 20, 0.05)
+    route = graph.geneticAlgorithm(100, 15, 0.01)
 
 if __name__ == "__main__":
     main()
