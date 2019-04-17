@@ -40,7 +40,7 @@ class Graph:
 
 
 # Runs 2-opt on a graph
-def twoOpt(graph, route):
+def twoOpt(graph, route, max_time, start):
     # Generate a random cycle and calcs its distance
     pm = graph.getPairMatrix()
     d = distance(route, pm)
@@ -61,7 +61,7 @@ def twoOpt(graph, route):
                     d = newd
                     route = r
         t += 1
-        if (d == tempd and t > 5):
+        if ((d == tempd and t > 5) or (datetime.datetime.now() - start).seconds >= max_time - 2):
             break
     return route
 
@@ -84,14 +84,14 @@ def main():
 
     pm = g.getPairMatrix()
     ir = g.getIDs()
-    r = twoOpt(g, ir)
+    r = twoOpt(g, ir, params[2], start)
     d = distance(r, g.getPairMatrix())
 
     start = datetime.datetime.now()
-    while (datetime.datetime.now() - start).seconds < params[2] - 10:
+    while (datetime.datetime.now() - start).seconds < params[2] - 2:
         rr = copy.deepcopy(ir)
         random.shuffle(rr)
-        tr = twoOpt(g, rr)
+        tr = twoOpt(g, rr, params[2], start)
         rd = distance(tr, g.getPairMatrix())
         if (rd < d):
             d = rd
