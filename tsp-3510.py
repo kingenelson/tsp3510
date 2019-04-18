@@ -43,7 +43,7 @@ class Graph:
 def twoOpt(graph, route, max_time, start):
     # Generate a random cycle and calcs its distance
     pm = graph.getPairMatrix()
-    d = distance(route, pm)
+    d = distance(route, pm, max_time, start)
     t = 0
     tempd = d
     while (t <= 200):
@@ -56,9 +56,9 @@ def twoOpt(graph, route, max_time, start):
                 r1 = r1[::-1]
                 r2 = route[k:]
                 r = r0 + r1 + r2
-                if (datetime.datetime.now() - start).seconds >= max_time - 2:
+                if (datetime.datetime.now() - start).seconds >= max_time - 10:
                     return route
-                newd = distance(r, pm)
+                newd = distance(r, pm, max_time, start)
                 if (newd < d):
                     d = newd
                     route = r
@@ -67,10 +67,12 @@ def twoOpt(graph, route, max_time, start):
             break
     return route
 
-def distance(route, pairMatrix):
+def distance(route, pairMatrix, max_time, start):
     dist = 0
     # for every node in tour
     for i in range(0, len(route)):
+        if (datetime.datetime.now() - start).seconds >= max_time - 2:
+            return -1
         if (i) >= (len(route) - 1):
             # last node to first node
             dist += pairMatrix[route[i] - 1][route[0] - 1]
@@ -83,23 +85,29 @@ def main():
     start = datetime.datetime.now()
     params = input()
     g = Graph(params[0])
+    max_time = params[2]
 
     pm = g.getPairMatrix()
     ir = g.getIDs()
-    r = twoOpt(g, ir, params[2], start)
-    d = distance(r, g.getPairMatrix())
+    r = ir
+    d = distance(r, g.getPairMatrix(), max_time, start)
+    print("after int dist", (datetime.datetime.now() - start).seconds)
 
-    start = datetime.datetime.now()
-    while (datetime.datetime.now() - start).seconds < params[2] - 2:
+    while (datetime.datetime.now() - start).seconds < params[2] - 10:
+        rd = d
         rr = copy.deepcopy(ir)
         random.shuffle(rr)
-        tr = twoOpt(g, rr, params[2], start)
-        rd = distance(tr, g.getPairMatrix())
+        tr = twoOpt(g, rr, max_time, start)
+        print("after 2opt", (datetime.datetime.now() - start).seconds)
+        mmd = distance(tr, g.getPairMatrix(), max_time, start)
+        print("after dist", (datetime.datetime.now() - start).seconds)
+        if (mmd != -1):
+            rd = mmd
         if (rd < d):
             d = rd
             r = tr
     print(d)
-    print(r)
+    # print(r)
     fp = open(params[1], 'w')
     fp.write(str(d) + "\n")
     for city in r:
