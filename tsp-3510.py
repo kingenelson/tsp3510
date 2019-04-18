@@ -56,6 +56,8 @@ def twoOpt(graph, route, max_time, start):
                 r1 = r1[::-1]
                 r2 = route[k:]
                 r = r0 + r1 + r2
+                if (datetime.datetime.now() - start).seconds >= max_time - 2:
+                    return route
                 newd = distance(r, pm)
                 if (newd < d):
                     d = newd
