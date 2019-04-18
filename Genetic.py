@@ -33,7 +33,7 @@ class Graph:
     #calculates the distance of the route by adding up all the distances within the route
     #input: route, a list of distances
 
-    def routeDistance(self, route):
+    '''def routeDistance(self, route):
         pathDistance = 0
         for city in range(len(route)):
             first_city = route[city]
@@ -42,10 +42,18 @@ class Graph:
             else:
                 second_city = route[city + 1]
             pathDistance += self.pairMatrix[first_city - 1][second_city - 1]
-        return pathDistance
+        return pathDistance'''
 
     #checks the fitness of the individual; in this case, the individual's fitness is the smaller distance
-    def fitness(self, pathDistance):
+    def fitness(self, route):
+        pathDistance = 0
+        for city in range(len(route)):
+            first_city = route[city]
+            if city + 1 >= len(route):
+                second_city = route[0]
+            else:
+                second_city = route[city + 1]
+            pathDistance += self.pairMatrix[first_city - 1][second_city - 1]
         return 1/float(pathDistance)
 
     #creates artificial 
@@ -65,7 +73,7 @@ class Graph:
     def checkFitness(self, population):
         fitness = []
         for i in population:
-            fitness.append([self.fitness(self.routeDistance(i)), population.index(i)])
+            fitness.append([self.fitness(i), population.index(i)])
         return sorted(fitness, reverse=True)
 
     def SelectionOfFittest(self, rankedPop, k, limit):
@@ -185,10 +193,10 @@ class Graph:
 def main():
     start = datetime.datetime.now()
     params = input()
-    graph = Graph("example_test.txt", params[2])
+    graph = Graph(params[0], params[2])
     #print(graph.getPairMatrix())
     #print("\n")
-    dist, route = graph.geneticAlgorithm(200, 30, 15, 0.10)
+    dist, route = graph.geneticAlgorithm(200, 30, 15, 0.05)
     print(dist, "\n")
     print(route)
     print("\n")
